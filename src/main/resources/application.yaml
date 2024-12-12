@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: rbpo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/rbpo
+    username: ${DB_LOGIN}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: ${SECRET_KEY}
+  expiration: 3600000
+
+server:
+  port: 8080
