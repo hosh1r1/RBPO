@@ -110,10 +110,9 @@ public class LicenseServiceImpl {
 
             return Base64.getEncoder().encodeToString(signature.sign());
         } catch (Exception e) {
-            return String.format("Ошибка при генерации подписи: %s", e.getMessage());
+            return String.format("Error generating signature: %s", e.getMessage());
         }
     }
-
 
     public ApplicationTicket createTicket(ApplicationUser user, ApplicationDevice device,
                                           ApplicationLicense license, String info, String status) {
@@ -146,14 +145,13 @@ public class LicenseServiceImpl {
         return ticket;
     }
 
-
     public ApplicationTicket activateLicense(String code, ApplicationDevice device, ApplicationUser user) {
         ApplicationTicket ticket = new ApplicationTicket();
         Optional<ApplicationLicense> optionalLicense = licenseRepository.findByCode(code);
 
         if (!optionalLicense.isPresent()) {
-            ticket.setInfo("Лицензия не найдена");
-            ticket.setStatus("Ошибка");
+            ticket.setInfo("License not found");
+            ticket.setStatus("Error");
             deviceServiceImpl.deleteLastDevice(user);
             return ticket;
         }
@@ -166,8 +164,8 @@ public class LicenseServiceImpl {
         boolean isDeviceLimitReached = deviceLicenseService.getDeviceCountForLicense(existingLicense.getId()) >= existingLicense.getDeviceCount();
 
         if (isBlocked || hasExpired || isDifferentUser || isDeviceLimitReached) {
-            ticket.setInfo("Активация невозможна");
-            ticket.setStatus("Ошибка");
+            ticket.setInfo("Activation is not possible");
+            ticket.setStatus("Error");
             deviceServiceImpl.deleteLastDevice(user);
             return ticket;
         }
@@ -183,12 +181,13 @@ public class LicenseServiceImpl {
 
         deviceLicenseService.createDeviceLicense(existingLicense, device);
         licenseRepository.save(existingLicense);
-        licenseHistoryService.createNewRecord("Активирована", "Лицензия действительна", user, existingLicense);
+        licenseHistoryService.createNewRecord("Activated", "License is valid", user, existingLicense);
 
-        ticket = createTicket(user, device, existingLicense, "Лицензия успешно активирована", "OK");
+        ticket = createTicket(user, device, existingLicense, "License successfully activated", "OK");
 
         return ticket;
     }
+
 
 
     public String updateLicense(Long id, Long ownerId, Long productId, Long typeId, Boolean isBlocked,
