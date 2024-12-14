@@ -199,7 +199,6 @@ public class LicenseServiceImpl {
         }
 
         ApplicationLicense existingLicense = optionalLicense.get();
-        existingLicense.setCode(String.valueOf(UUID.randomUUID()));
 
         if (productService.getProductById(productId).isEmpty()) {
             return "The specified product does not exist";
@@ -214,7 +213,7 @@ public class LicenseServiceImpl {
         existingLicense.setDuration(licenseTypeService.getLicenseTypeById(typeId).get().getDefaultDuration());
 
         existingLicense.setBlocked(isBlocked);
-        existingLicense.setOwnerId(userDetailsServiceImpl.getUserById(ownerId).orElse(null));  // Handle potential absence
+        existingLicense.setOwnerId(userDetailsServiceImpl.getUserById(ownerId).orElse(null));  
         existingLicense.setDescription(description);
         existingLicense.setDeviceCount(deviceCount);
 
