@@ -16,6 +16,8 @@ import ru.mtuci.rbpopr.configuration.JwtTokenProvider;
 import ru.mtuci.rbpopr.model.*;
 import ru.mtuci.rbpopr.repository.UserRepository;
 
+//TODO: 1. Добавьте в контроллеры больше CRUD операций
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor

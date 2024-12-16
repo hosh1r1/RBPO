@@ -7,6 +7,8 @@ import ru.mtuci.rbpopr.repository.DeviceRepository;
 
 import java.util.Optional;
 
+//TODO: 1. Оптимизировать метод registerOrUpdateDevice
+
 @Service
 public class DeviceServiceImpl {
     private final DeviceRepository deviceRepository;

@@ -13,6 +13,8 @@ import ru.mtuci.rbpopr.service.impl.*;
 import java.util.Objects;
 import java.util.Optional;
 
+//TODO: 1. productService.getProductById - можно оптимизировать, сделав только один запрос к БД
+
 @RestController
 @RequestMapping("/api/license")
 @RequiredArgsConstructor

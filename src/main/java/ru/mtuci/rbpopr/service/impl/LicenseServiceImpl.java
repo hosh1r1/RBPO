@@ -10,6 +10,14 @@ import java.util.*;
 import java.security.*;
 import java.util.stream.Collectors;
 
+//TODO: 1. Некоторые проверки дублируются контроллером
+//TODO: 2. licenseRepository.findByIdInAndCode кажется лишним, т.к. applicationDeviceLicensesList уже содержит информацию по связным лицензиям
+//TODO: 3. createTicket на вид содержит лишние проверки
+//TODO: 4. Почему status не входит в подпись тикета?
+//TODO: 5. При активации лицензии дата первой активации никак не влияет на дату окончания
+//TODO: 6.  updateLicense - owner не может быть null
+//TODO: 7. Есть дублирующиеся проверки, целесообразно их вынести в отдельный метод
+
 @Service
 public class LicenseServiceImpl {
     private final LicenseRepository licenseRepository;
