@@ -7,6 +7,8 @@ import ru.mtuci.rbpopr.repository.DeviceRepository;
 
 import java.util.Optional;
 
+//TODO: 1. Оптимизировать метод registerOrUpdateDevice
+
 @Service
 public class DeviceServiceImpl {
     private final DeviceRepository deviceRepository;
@@ -28,18 +30,15 @@ public class DeviceServiceImpl {
         lastDevice.ifPresent(deviceRepository::delete);
     }
 
-    public ApplicationDevice registerOrUpdateDevice(String mac, String name, ApplicationUser user, Long deviceId){
-        Optional<ApplicationDevice> device = getDeviceByIdAndUser(user, deviceId);
-        ApplicationDevice newDevice = new ApplicationDevice();
-        if (device.isPresent()) {
-            newDevice = device.get();
-        }
+    public ApplicationDevice registerOrUpdateDevice(String mac, String name, ApplicationUser user, Long deviceId) {
+        ApplicationDevice device = getDeviceByIdAndUser(user, deviceId)
+                .orElse(new ApplicationDevice());
 
-        newDevice.setName(name);
-        newDevice.setMacAddress(mac);
-        newDevice.setUser(user);
+        device.setName(name);
+        device.setMacAddress(mac);
+        device.setUser(user);
 
-        deviceRepository.save(newDevice);
-        return newDevice;
+        return deviceRepository.save(device);
     }
+
 }
