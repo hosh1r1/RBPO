@@ -1,6 +1,7 @@
 package ru.mtuci.rbpopr.controller;
 
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.mtuci.rbpopr.configuration.JwtTokenProvider;
 import ru.mtuci.rbpopr.model.*;
 import ru.mtuci.rbpopr.repository.UserRepository;
+
+
+//TODO: 1. Добавьте в контроллеры больше CRUD операций
 
 @RestController
 @RequestMapping("/auth")
@@ -71,6 +77,33 @@ public class AuthenticationController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during registration. Please try again.");
+        }
+    }
+    @PostMapping("/changeEmail")
+    public ResponseEntity<?> changeEmail(@RequestHeader("Authorization") String token, @RequestBody ChangeEmailRequest request, HttpServletRequest req) {
+        try {
+            String newEmail = request.getNewEmail();
+            String password = request.getPassword();
+
+            String email = jwtTokenProvider.getUsername(req.getHeader("Authorization").substring(7));
+
+            ApplicationUser user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+
+            user.setEmail(newEmail);
+            userRepository.save(user);
+
+            String newToken = jwtTokenProvider.createToken(newEmail, user.getRole().getGrantedAuthorities());
+
+            return ResponseEntity.ok(new AuthenticationResponse(newEmail, newToken));
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("User not found");
+        } catch (AuthenticationException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid email or password\"");
         }
     }
 }
