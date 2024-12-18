@@ -13,6 +13,8 @@ import ru.mtuci.rbpopr.service.impl.*;
 import java.util.Objects;
 import java.util.Optional;
 
+//TODO: 1. productService.getProductById - можно оптимизировать, сделав только один запрос к БД
+
 @RestController
 @RequestMapping("/api/license")
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class LicenseController {
 
             String email = jwtTokenProvider.getUsername(req.getHeader("Authorization").substring(7));
             ApplicationUser user = userDetailsService.getUserByEmail(email).get();
+            Optional<ApplicationProduct> product = productService.getProductById(productId);
 
             if (licenseTypeService.getLicenseTypeById(licenseTypeId).isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -47,16 +50,15 @@ public class LicenseController {
                         .body("Owner with given ID does not exist.");
             }
 
-            if (productService.getProductById(productId).isEmpty()) {
+            if (product.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Product with given ID does not exist.");
             }
 
-            if (productService.getProductById(productId).get().isBlocked()) {
+            if (product.get().isBlocked()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("This product is not available.");
             }
-
             Long id = licenseService.createLicense(productId, ownerId, licenseTypeId, user, request.getCount());
 
             return ResponseEntity.status(HttpStatus.OK).body("License created successfully.\nID: " + id);
