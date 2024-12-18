@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "da3b37eb-c86b-4f94-a31c-5500f4d31d7d",
+		"_postman_id": "0b3e4cb3-29a8-40eb-aa45-2dc1ac5d95af",
 		"name": "РБПО Практика 2024",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39125017"
+		"_exporter_id": "40362412"
 	},
 	"item": [
 		{
@@ -419,6 +419,45 @@
 						"api",
 						"license",
 						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "changeEmail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6WyJyZWFkIiwiUk9MRV9VU0VSIl0sImlhdCI6MTczNDUyNzU4NSwiZXhwIjoxNzM0NTMxMTg1fQ.5zHnbDcav2BGyFXO9v-0oPjLQywRHVLHUhNkJBRZdhXAmLWfbhAYe1yMq431Q5iiyCatUsIYPAOMGofxG9tP9A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"newEmail\": \"user@test.com\",\r\n  \"password\": \"user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/changeEmail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"changeEmail"
 					]
 				}
 			},
