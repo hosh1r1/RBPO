@@ -40,25 +40,11 @@ public class LicenseController {
             ApplicationUser user = userDetailsService.getUserByEmail(email).get();
             Optional<ApplicationProduct> product = productService.getProductById(productId);
 
-            if (licenseTypeService.getLicenseTypeById(licenseTypeId).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("License type with given ID does not exist.");
-            }
-
-            if (userService.getUserById(ownerId).isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Owner with given ID does not exist.");
-            }
-
-            if (product.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("Product with given ID does not exist.");
-            }
-
             if (product.get().isBlocked()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("This product is not available.");
             }
+
             Long id = licenseService.createLicense(productId, ownerId, licenseTypeId, user, request.getCount());
 
             return ResponseEntity.status(HttpStatus.OK).body("License created successfully.\nID: " + id);
@@ -152,7 +138,7 @@ public class LicenseController {
                     .body(ticket.getStatus().equals("OK") ? ticket : ticket.getInfo());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Oops, something went wrong....");
+                    .body("An error occurred while renewing license. Please try again.");
         }
     }
 
